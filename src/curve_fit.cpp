@@ -99,7 +99,7 @@ class EdgePointOnCurve
     return true;
   }
 
-  G2O_MAKE_AUTO_AD_FUNCTIONS  // use autodiff
+  G2O_MAKE_AUTO_AD_FUNCTIONS  // use autodiff 自动生成微分函数
 };
 
 int main(int argc, char** argv) {
