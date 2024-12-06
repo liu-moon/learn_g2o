@@ -37,10 +37,13 @@
 
 using namespace std;
 
+// 启用密集矩阵优化
 G2O_USE_OPTIMIZATION_LIBRARY(dense);
 
 /**
  * \brief the params, a, b, and lambda for a * exp(-lambda * t) + b
+ * 顶点的维度为 3
+ * 顶点的数据类型为 Eigen::Vector3d
  */
 class VertexParams : public g2o::BaseVertex<3, Eigen::Vector3d> {
  public:
@@ -54,7 +57,10 @@ class VertexParams : public g2o::BaseVertex<3, Eigen::Vector3d> {
   void setToOriginImpl() override {}
 
   void oplusImpl(const double* update) override {
+    // ConstMapType 将外部的double* 类型的数据映射为Eigen向量
+    // 避免数据拷贝
     Eigen::Vector3d::ConstMapType v(update);
+    // 当前估计值 = 上一次估计值 + 增量
     _estimate += v;
   }
 };
@@ -65,6 +71,9 @@ class VertexParams : public g2o::BaseVertex<3, Eigen::Vector3d> {
  * Here the measurement is the point which is lies on the curve.
  * The error function computes the difference between the curve
  * and the point.
+ * 误差维度为 1
+ * 边的观测值类型为 Eigen::Vector2d
+ * 关联的顶点类型为 VertexParams
  */
 class EdgePointOnCurve
     : public g2o::BaseUnaryEdge<1, Eigen::Vector2d, VertexParams> {
@@ -94,16 +103,16 @@ class EdgePointOnCurve
 };
 
 int main(int argc, char** argv) {
-  int numPoints;
-  int maxIterations;
-  bool verbose;
-  string dumpFilename;
+  int numPoints;  // 采样点数
+  int maxIterations;  // 最大迭代次数
+  bool verbose; // 详细模式输出
+  string dumpFilename;  // 将点转存到文件
   g2o::CommandArgs arg;
-  arg.param("dump", dumpFilename, "", "dump the points into a file");
+  arg.param("dump", dumpFilename, "points.txt", "dump the points into a file");
   arg.param("numPoints", numPoints, 50,
             "number of points sampled from the curve");
   arg.param("i", maxIterations, 10, "perform n iterations");
-  arg.param("v", verbose, false, "verbose output of the optimization process");
+  arg.param("v", verbose, true, "verbose output of the optimization process");
 
   arg.parseArgs(argc, argv);
 
@@ -114,6 +123,7 @@ int main(int argc, char** argv) {
   double lambda = 0.2;
   Eigen::Vector2d* points = new Eigen::Vector2d[numPoints];
   for (int i = 0; i < numPoints; ++i) {
+    // x 在 [0,10] 范围分布
     double x = g2o::Sampler::uniformRand(0, 10);
     double y = a * exp(-lambda * x) + b;
     // add Gaussian noise
@@ -134,6 +144,7 @@ int main(int argc, char** argv) {
   // allocate the solver
   g2o::OptimizationAlgorithmProperty solverProperty;
   optimizer.setAlgorithm(
+      // 使用LM密集优化算法
       g2o::OptimizationAlgorithmFactory::instance()->construct("lm_dense",
                                                                solverProperty));
 
@@ -141,10 +152,11 @@ int main(int argc, char** argv) {
   // 1. add the parameter vertex
   VertexParams* params = new VertexParams();
   params->setId(0);
-  params->setEstimate(
+  params->setEstimate(  // 设置初始估计值
       Eigen::Vector3d(1, 1, 1));  // some initial value for the params
   optimizer.addVertex(params);
   // 2. add the points we measured to be on the curve
+  // 添加边
   for (int i = 0; i < numPoints; ++i) {
     EdgePointOnCurve* e = new EdgePointOnCurve;
     e->setInformation(Eigen::Matrix<double, 1, 1>::Identity());
