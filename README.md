@@ -39,3 +39,39 @@ g2o版本：20230806
    ```bash
    sudo make install
    ```
+
+
+## 环境问题
+
+```shell
+./bin/sba_demo: error while loading shared libraries: libg2o_opengl_helper.so.0.1: cannot open shared object file: No such file or directory
+```
+
+将库路径添加到系统搜索路径
+
+编辑动态链接器的配置文件，将库路径永久添加到搜索路径中：
+
+1. 打开 /etc/ld.so.conf.d/ 下的一个配置文件（或创建一个新的配置文件）：
+
+```shell
+sudo nano /etc/ld.so.conf.d/g2o.conf
+```
+
+2. 添加以下内容：
+
+```shell
+/usr/local/g2o_2308/lib
+```
+
+3. 更新动态链接器缓存：
+
+```shell
+sudo ldconfig
+```
+
+4. 验证是否已添加：
+
+```shell
+ldconfig -p | grep libg2o_opengl_helper
+```
+如果显示了正确的路径，说明配置已生效。

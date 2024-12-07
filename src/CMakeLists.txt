@@ -16,3 +16,14 @@ target_link_libraries(curve_fit
         ${G2O_SOLVER_DENSE_LIBRARY}
         ${G2O_STUFF_LIBRARY}
 )
+
+
+add_executable(sba_demo sba_demo.cpp)
+target_link_libraries(sba_demo
+        spdlog::spdlog
+        ${G2O_TYPES_ICP_LIBRARY}
+        ${G2O_TYPES_SLAM3D_LIBRARY}
+        ${G2O_CORE_LIBRARY}
+        ${G2O_STUFF_LIBRARY}
+        ${G2O_OPENGL_HELPER_LIBRARY}
+)
