@@ -40,7 +40,6 @@ g2o版本：20230806
    sudo make install
    ```
 
-
 ## 环境问题
 
 ```shell
@@ -53,25 +52,26 @@ g2o版本：20230806
 
 1. 打开 /etc/ld.so.conf.d/ 下的一个配置文件（或创建一个新的配置文件）：
 
-```shell
-sudo nano /etc/ld.so.conf.d/g2o.conf
-```
+   ```shell
+   sudo nano /etc/ld.so.conf.d/g2o.conf
+   ```
 
 2. 添加以下内容：
 
-```shell
-/usr/local/g2o_2308/lib
-```
+   ```shell
+   /usr/local/g2o_2308/lib
+   ```
 
 3. 更新动态链接器缓存：
 
-```shell
-sudo ldconfig
-```
+   ```shell
+   sudo ldconfig
+   ```
 
 4. 验证是否已添加：
 
-```shell
-ldconfig -p | grep libg2o_opengl_helper
-```
+   ```shell
+   ldconfig -p | grep libg2o_opengl_helper
+   ```
+
 如果显示了正确的路径，说明配置已生效。
