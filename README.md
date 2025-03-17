@@ -7,7 +7,7 @@
 系统：Ubuntu
 g2o版本：20241228
 
-在 Ubuntu 中安装 g2o 到指定目录 `/usr/local/g2o_2308`
+在 Ubuntu 中安装 g2o 到指定目录 `/usr/local/g2o_2412`
 
 1. **克隆 g2o 仓库**
 
@@ -59,7 +59,7 @@ g2o版本：20241228
 2. 添加以下内容：
 
    ```shell
-   /usr/local/g2o_2308/lib
+   /usr/local/g2o_2412/lib
    ```
 
 3. 更新动态链接器缓存：
