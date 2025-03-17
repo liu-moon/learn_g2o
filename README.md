@@ -5,6 +5,7 @@
 ## 安装
 
 系统：Ubuntu
+
 g2o版本：20241228
 
 在 Ubuntu 中安装 g2o 到指定目录 `/usr/local/g2o_2412`
@@ -15,26 +16,31 @@ g2o版本：20241228
     git clone --branch 20241228_git --single-branch https://github.com/RainerKuemmerle/g2o.git
     ```
 
-2. **创建并进入build目录**
+2. **进入g2o目录**
 
    ```bash
-   mkdir build
-   cd build
+   cd g2o
    ```
 
-3. **配置 CMake**
+3. **创建并进入build目录**
+
+   ```bash
+   mkdir build && cd build
+   ```
+
+4. **配置 CMake**
 
    ```bash
    cmake -DCMAKE_INSTALL_PREFIX=/usr/local/g2o_2412 ..
    ```
 
-4. **编译**
+5. **编译**
 
    ```bash
    make -j$(nproc)
    ```
 
-5. **安装**
+6. **安装**
 
    ```bash
    sudo make install
